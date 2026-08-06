@@ -1,0 +1,29 @@
+name: "Telegram Stremio"
+description: "Telegram Bot for Stremio"
+version: "1.0.0"
+slug: "telegram_stremio"
+init: false
+arch:
+  - aarch64
+  - amd64
+  - armv7
+  - armhf
+  - i386
+options:
+  API_ID: ""
+  API_HASH: ""
+  BOT_TOKEN: ""
+  OWNER_ID: ""
+  DATABASE: ""
+  PORT: 8000
+schema:
+  API_ID: str
+  API_HASH: str
+  BOT_TOKEN: str
+  OWNER_ID: str
+  DATABASE: str
+  PORT: int
+ports:
+  8000/tcp: 8000
+map:
+  - config:rw
