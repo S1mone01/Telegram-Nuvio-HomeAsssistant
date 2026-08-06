@@ -148,6 +148,12 @@ class IngressASGIMiddleware:
             if ingress:
                 ingress_str = ingress.decode("utf-8")
                 scope["root_path"] = ingress_str
+                
+                path = scope.get("path", "")
+                if path.startswith(ingress_str):
+                    scope["path"] = path[len(ingress_str):]
+                    if not scope["path"]:
+                        scope["path"] = "/"
 
                 async def send_wrapper(message):
                     if message["type"] == "http.response.start":
