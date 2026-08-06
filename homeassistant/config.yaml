@@ -1,6 +1,6 @@
 name: "Telegram Stremio"
 description: "Telegram Bot for Stremio"
-version: "1.0.0"
+version: "1.0.1"
 slug: "telegram_stremio"
 init: false
 arch:
@@ -23,6 +23,7 @@ schema:
   OWNER_ID: str
   DATABASE: str
   PORT: int
+webui: "http://[HOST]:[PORT:8000]/"
 ports:
   8000/tcp: 8000
 map:
