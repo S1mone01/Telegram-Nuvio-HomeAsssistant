@@ -1,6 +1,6 @@
 name: "Telegram Stremio"
 description: "Telegram Bot for Stremio"
-version: "1.0.2"
+version: "1.0.3"
 slug: "telegram_stremio"
 init: false
 arch:

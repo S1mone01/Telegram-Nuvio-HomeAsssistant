@@ -137,6 +137,36 @@ from Backend.fastapi.routes.template_routes import (
 from Backend.fastapi.security.credentials import require_auth
 from Backend.pyrofork.bot import work_loads_summary
 
+class IngressASGIMiddleware:
+    def __init__(self, app):
+        self.app = app
+
+    async def __call__(self, scope, receive, send):
+        if scope["type"] in ("http", "websocket"):
+            headers = dict(scope.get("headers", []))
+            ingress = headers.get(b"x-ingress-path")
+            if ingress:
+                ingress_str = ingress.decode("utf-8")
+                scope["root_path"] = ingress_str
+
+                async def send_wrapper(message):
+                    if message["type"] == "http.response.start":
+                        status = message.get("status")
+                        if status in (301, 302, 303, 307, 308):
+                            new_headers = []
+                            for k, v in message.get("headers", []):
+                                if k.lower() == b"location":
+                                    loc = v.decode("utf-8")
+                                    if loc.startswith("/") and not loc.startswith(ingress_str):
+                                        new_headers.append((k, (ingress_str + loc).encode("utf-8")))
+                                        continue
+                                new_headers.append((k, v))
+                            message["headers"] = new_headers
+                    await send(message)
+                return await self.app(scope, receive, send_wrapper)
+
+        await self.app(scope, receive, send)
+
 templates = Jinja2Templates(directory="Backend/fastapi/templates")
 
 app = FastAPI(
@@ -146,6 +176,7 @@ app = FastAPI(
 )
 
 #----- Middleware
+app.add_middleware(IngressASGIMiddleware)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
