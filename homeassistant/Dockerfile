@@ -21,7 +21,7 @@ WORKDIR /app
 
 # Clone the main repository to get the code
 # This allows the Home Assistant add-on to build without restructuring the main repo
-ARG CACHE_BUST=5.0.6
+ARG CACHE_BUST=5.0.7
 RUN git clone https://github.com/S1mone01/Telegram-Nuvio-HomeAsssistant.git .
 
 # Install dependencies
